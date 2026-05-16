@@ -1,0 +1,305 @@
+# --------------------------------------------------------------------------------------------------------------
+# Default Template
+# --------------------------------------------------------------------------------------------------------------
+
+UniMixer_criteo_x1_001_be50edb0: &default_criteo
+    batch_norm: false
+    batch_size: 4096
+    dataset_id: criteo_x1_7b681156
+    debug: false
+    embedding_dim: 10
+    embedding_regularizer: 1.0e-05
+    epochs: 100
+    every_x_epochs: 1
+    learning_rate: 0.001
+    loss: binary_crossentropy
+    metrics: [AUC, logloss]
+    model: UniMixer
+    model_id: UniMixer_base
+    model_root: ../autodl-tmp/save_models/UniMixer_criteo_x1/
+    monitor: AUC
+    monitor_mode: max
+    net_dropout: 0.1
+    net_regularizer: 0
+    num_workers: 3
+    optimizer: adam
+    patience: 2
+    pickle_feature_encoder: true
+    save_best_only: true
+    seed: 2019
+    shuffle: true
+    task: binary_classification
+    use_hdf5: true
+    verbose: 0
+    Token_num: 13
+    Token_dim: 26
+    depth: 2
+    use_opq: false
+    opq_momentum: 0.01
+    mixing_type: 2
+    pred_head: noparam_mean
+    interaction_ffn_type: mlp
+
+UniMixer_avazu_x4_001_5e30b8d4: &default_avazu
+    batch_norm: false
+    batch_size: 10000
+    dataset_id: avazu_x4_3bbbc4c9
+    debug: false
+    embedding_dim: 16
+    embedding_regularizer: 0
+    epochs: 100
+    every_x_epochs: 1
+    learning_rate: 0.001
+    loss: binary_crossentropy
+    metrics: [AUC, logloss]
+    model: UniMixer
+    model_id: UniMixer_base
+    model_root: ../autodl-tmp/save_models/UniMixer_avazu_x4/
+    monitor: {AUC: 1, logloss: -1}
+    monitor_mode: max
+    net_dropout: 0
+    net_regularizer: 0
+    num_workers: 3
+    optimizer: adam
+    patience: 2
+    pickle_feature_encoder: true
+    save_best_only: true
+    seed: 2019
+    shuffle: true
+    task: binary_classification
+    use_hdf5: true
+    verbose: 0
+    Token_num: 13
+    Token_dim: 26
+    depth: 2
+    use_opq: false
+    opq_momentum: 0.01
+    mixing_type: 2
+    pred_head: noparam_mean
+    interaction_ffn_type: mlp
+
+# --------------------------------------------------------------------------------------------------------------
+################################################################################################################
+############################################## Criteo Experiments ##############################################
+################################################################################################################
+# --------------------------------------------------------------------------------------------------------------
+# dim 10 Emb: 20863420
+
+# [AUC: 0.814719 - logloss: 0.437302]
+UniMixer_criteo_dim_10:
+    <<: *default_criteo
+    mixing_type: 999
+    pred_head: mlp
+    learning_rate: 0.001
+    Token_num: 15
+    Token_dim: 26
+    embedding_dim: 10
+    use_tokenizer: true
+    depth: 1
+    proj_param: {hidden_units: [500], dropout: 0.1, activation: relu, trans_type: matrix, use_layer_norm: true}
+    interaction_ffn_type: mlp
+    interaction_mlp_params: {hidden_units: [64,64], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}
+    net_dropout: 0.1
+    net_regularizer: 0
+    embedding_regularizer: 1.0e-05
+
+
+# [AUC: 0.814883 - logloss: 0.437069]
+# Default scaling
+UniMixer_criteo_dim_20: &criteo_dim_20
+    <<: *default_criteo
+    mixing_type: 999
+    pred_head: mlp
+    learning_rate: 0.001
+    Token_num: 26
+    Token_dim: 30
+    embedding_dim: 20
+    use_tokenizer: true
+    depth: 1
+    proj_param: {hidden_units: [500], dropout: 0.1, activation: relu, trans_type: matrix, use_layer_norm: true}
+    interaction_ffn_type: mlp
+    interaction_mlp_params: {hidden_units: [64,64], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}
+    net_dropout: 0.1
+    net_regularizer: 0
+    embedding_regularizer: 1.0e-05
+
+UniMixer_criteo_dim_20_v1:
+    <<: *criteo_dim_20
+    interaction_mlp_params: {hidden_units: [24,24], dropout: 0.0, activation: swiglu, expansion_rate: 1.5, use_layer_norm: true}
+
+UniMixer_criteo_dim_20_v2:
+    <<: *criteo_dim_20
+    interaction_mlp_params: {hidden_units: [24,24], dropout: 0.0, activation: swiglu, expansion_rate: 2.0, use_layer_norm: true}
+
+UniMixer_criteo_dim_20_v3:
+    <<: *criteo_dim_20
+    depth: 2
+    interaction_mlp_params: {hidden_units: [24,24], dropout: 0.0, activation: swiglu, expansion_rate: 2.0, use_layer_norm: true}
+
+UniMixer_criteo_dim_20_v4:
+    <<: *criteo_dim_20
+    depth: 2
+    interaction_mlp_params: {hidden_units: [24,24], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}
+
+UniMixer_criteo_dim_20_v5:
+    <<: *criteo_dim_20
+    depth: 2
+    interaction_mlp_params: {hidden_units: [48,48], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}
+
+UniMixer_criteo_dim_20_v6:
+    <<: *criteo_dim_20
+    depth: 3
+    interaction_mlp_params: {hidden_units: [48,48], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}
+
+UniMixer_criteo_dim_20_v7:
+    <<: *criteo_dim_20
+    depth: 4
+    interaction_mlp_params: {hidden_units: [64,64], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}
+
+UniMixer_criteo_dim_20_base:
+    <<: *criteo_dim_20
+    Token_dim: 26
+    mixing_type: 2
+    depth: 2
+    proj_param: {hidden_units: [500], dropout: 0.1, activation: relu, trans_type: matrix, use_layer_norm: false}
+    interaction_mlp_params: {hidden_units: [200,200], dropout: 0.0, activation: gelu, expansion_rate: 1.0, use_layer_norm: false}
+
+UniMixer_criteo_dim_20_fast:
+    <<: *criteo_dim_20
+    mixing_type: 8881
+    depth: 2
+    interaction_mlp_params: {hidden_units: [24,24], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}
+
+# --------------------------------------------------------------------------------------------------------------
+################################################################################################################
+############################################## Avazu Experiments ##############################################
+################################################################################################################
+# --------------------------------------------------------------------------------------------------------------
+# dim 16 Emb: 60030384
+
+# This is the record template, you can follow this template to record your experimental results
+# [AUC: * - Logloss: *]
+# UniMixer_avazu_testing:
+#     <<: *default_avazu
+#     mixing_type: 999
+#     pred_head: mlp
+#     learning_rate: 0.0001 #firm
+#     Token_num: 24
+#     Token_dim: 64
+#     embedding_dim: 64
+#     use_tokenizer: true #firm
+#     depth: 5 #firm
+#     proj_param: {hidden_units: [800], dropout: 0.0, activation: relu, trans_type: vector, use_layer_norm: true}
+#     interaction_ffn_type: mlp
+#     interaction_mlp_params: {hidden_units: [80], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}
+#     net_dropout: 0.1
+#     net_regularizer: 0.0
+#     embedding_regularizer: 0.0
+
+
+# [AUC: 0.793131 - logloss: 0.372312]
+UniMixer_avazu_dim_16:
+    <<: *default_avazu
+    mixing_type: 999
+    pred_head: mlp
+    learning_rate: 0.001
+    Token_num: 24
+    Token_dim: 16
+    embedding_dim: 16
+    use_tokenizer: true
+    depth: 4
+    proj_param: {hidden_units: [800], dropout: 0.0, activation: relu, trans_type: vector, use_layer_norm: true}
+    interaction_ffn_type: mlp
+    interaction_mlp_params: {hidden_units: [16], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}
+    net_dropout: 0.1
+    net_regularizer: 0.0
+    embedding_regularizer: 0.0
+
+
+# [AUC: 0.794352 - logloss: 0.371302]
+UniMixer_avazu_dim_32:
+    <<: *default_avazu
+    mixing_type: 999
+    pred_head: mlp
+    learning_rate: 0.001
+    Token_num: 24
+    Token_dim: 32
+    embedding_dim: 32
+    use_tokenizer: false
+    depth: 3
+    proj_param: {hidden_units: [800], dropout: 0.0, activation: relu, trans_type: vector, use_layer_norm: true}
+    interaction_ffn_type: mlp
+    interaction_mlp_params: {hidden_units: [32], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}
+    net_dropout: 0.1
+    net_regularizer: 0.0
+    embedding_regularizer: 0.0
+
+
+# [AUC: 0.794775 - logloss: 0.371180]
+# Default scaling
+UniMixer_avazu_dim_64: &avazu_dim_64
+    <<: *default_avazu
+    mixing_type: 999
+    pred_head: mlp
+    learning_rate: 0.0001 #firm
+    Token_num: 24
+    Token_dim: 64
+    embedding_dim: 64
+    use_tokenizer: true #firm
+    depth: 5 #firm
+    proj_param: {hidden_units: [800], dropout: 0.0, activation: relu, trans_type: vector, use_layer_norm: true}
+    interaction_ffn_type: mlp
+    interaction_mlp_params: {hidden_units: [64], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}
+    net_dropout: 0.1
+    net_regularizer: 0.0
+    embedding_regularizer: 0.0
+
+UniMixer_avazu_dim_64_v1:
+    <<: *avazu_dim_64
+    depth: 1
+    interaction_mlp_params: {hidden_units: [64], dropout: 0.0, activation: swiglu, expansion_rate: 1.0, use_layer_norm: true}
+
+UniMixer_avazu_dim_64_v2:
+    <<: *avazu_dim_64
+    depth: 2
+    interaction_mlp_params: {hidden_units: [64], dropout: 0.0, activation: swiglu, expansion_rate: 1.5, use_layer_norm: true}
+
+UniMixer_avazu_dim_64_v3:
+    <<: *avazu_dim_64
+    depth: 2
+    interaction_mlp_params: {hidden_units: [64], dropout: 0.0, activation: swiglu, expansion_rate: 2.0, use_layer_norm: true}
+
+UniMixer_avazu_dim_64_v4:
+    <<: *avazu_dim_64
+    depth: 3
+    interaction_mlp_params: {hidden_units: [64], dropout: 0.0, activation: swiglu, expansion_rate: 2.0, use_layer_norm: true}
+
+UniMixer_avazu_dim_64_v5:
+    <<: *avazu_dim_64
+    depth: 3
+    interaction_mlp_params: {hidden_units: [64], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}
+
+UniMixer_avazu_dim_64_v6:
+    <<: *avazu_dim_64
+    depth: 4
+    interaction_mlp_params: {hidden_units: [64], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}
+
+UniMixer_avazu_dim_64_v7:
+    <<: *avazu_dim_64
+    depth: 5
+    interaction_mlp_params: {hidden_units: [64], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}
+
+UniMixer_avazu_dim_64_base:
+    <<: *avazu_dim_64
+    Token_dim: 48
+    mixing_type: 2
+    depth: 5
+    proj_param: {hidden_units: [800], dropout: 0.0, activation: relu, trans_type: matrix, use_layer_norm: false}
+    interaction_mlp_params: {hidden_units: [400,400], dropout: 0.0, activation: gelu, expansion_rate: 1.0, use_layer_norm: false}
+
+UniMixer_avazu_dim_64_fast:
+    <<: *avazu_dim_64
+    Token_dim: 48
+    mixing_type: 8882
+    depth: 5
+    interaction_mlp_params: {hidden_units: [64], dropout: 0.0, activation: swiglu, expansion_rate: 3.0, use_layer_norm: true}

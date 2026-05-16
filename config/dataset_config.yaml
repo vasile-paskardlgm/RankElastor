@@ -1,0 +1,42 @@
+# Criteo dataset
+criteo_x1_7b681156:
+    data_format: parquet # original: csv
+    data_root: ../autodl-tmp/data/Criteo_x1/
+    feature_cols:
+    -   active: true
+        dtype: float
+        name: [I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, I11, I12, I13]
+        type: numeric
+    -   active: true
+        dtype: float
+        name: [C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15, C16,
+            C17, C18, C19, C20, C21, C22, C23, C24, C25, C26]
+        type: categorical
+    label_col: {dtype: float, name: label}
+    min_categr_count: 1
+    rebuild_dataset: false # original: true
+    test_data: ../autodl-tmp/data/Criteo_x1/criteo_x1_7b681156/test.parquet # original: test.csv
+    train_data: ../autodl-tmp/data/Criteo_x1/criteo_x1_7b681156/train.parquet # original: train.csv
+    valid_data: ../autodl-tmp/data/Criteo_x1/criteo_x1_7b681156/valid.parquet # original: valid.csv
+
+# Avazu dataset
+avazu_x4_3bbbc4c9:
+    data_format: parquet # original: csv
+    data_root: ../autodl-tmp/data/Avazu_x4/
+    feature_cols:
+    - {active: false, dtype: str, name: id, type: categorical}
+    - {active: true, dtype: str, name: hour, preprocess: convert_hour, type: categorical}
+    -   active: true
+        dtype: str
+        name: [C1, banner_pos, site_id, site_domain, site_category, app_id, app_domain,
+            app_category, device_id, device_ip, device_model, device_type, device_conn_type,
+            C14, C15, C16, C17, C18, C19, C20, C21]
+        type: categorical
+    - {active: true, dtype: str, name: weekday, preprocess: convert_weekday, type: categorical}
+    - {active: true, dtype: str, name: weekend, preprocess: convert_weekend, type: categorical}
+    label_col: {dtype: float, name: click}
+    min_categr_count: 2
+    rebuild_dataset: false # original: true
+    test_data: ../autodl-tmp/data/Avazu_x4/avazu_x4_3bbbc4c9/test.parquet # original: test.csv
+    train_data: ../autodl-tmp/data/Avazu_x4/avazu_x4_3bbbc4c9/train.parquet # original: train.csv
+    valid_data: ../autodl-tmp/data/Avazu_x4/avazu_x4_3bbbc4c9/valid.parquet # original: valid.csv
